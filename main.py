@@ -8,6 +8,7 @@ from tg_bot.handlers.admin import admin_router, set_admin_bot_menu
 from logs.logger import logger
 from data.database import db
 from utils.check_and_send import check_and_send
+from tg_bot.handlers.owner import owner_router, set_owner_bot_menu
 
 bot_set: TgBot = load_bot_settings()
 
@@ -15,10 +16,19 @@ async def main():
     bot= Bot(token=bot_set.token, default=bot_set.default)
 
     dp = Dispatcher()
+    dp.include_router(owner_router)
     dp.include_router(admin_router)
     dp.include_router(user_router)
 
-    await set_admin_bot_menu(bot)
+    admin_ids = db.get_all_admins()
+
+    await set_owner_bot_menu(bot, bot_set.owner_id)
+
+    for admin_id in admin_ids:
+        await set_admin_bot_menu(bot, admin_id)
+
+    db.add_admin(bot_set.owner_id)
+
     await set_user_bot_menu(bot)
 
     scheduler = AsyncIOScheduler()

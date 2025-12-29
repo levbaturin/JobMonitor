@@ -9,7 +9,7 @@ load_dotenv()
 
 BOT_TOKEN = os.getenv('BOT_TOKEN', '')
 VK_TOKEN = os.getenv('VK_TOKEN', '')
-BOT_OWNER_ID = os.getenv('BOT_OWNER_ID', '')
+BOT_OWNER_ID = int(os.getenv('BOT_OWNER_ID', ''))
 
 @dataclass
 class LogSettings:
@@ -38,7 +38,7 @@ class DataBaseSettings:
 @dataclass
 class TgBot:
     token: str
-    owner_id: str
+    owner_id: int
     default: DefaultBotProperties
 
 @dataclass

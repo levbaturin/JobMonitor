@@ -79,3 +79,43 @@ async def parse_all_vk_groups() -> List[Job]:
         await asyncio.sleep(0.33)
 
     return result
+
+async def get_vk_group_info(url: str) -> dict:
+    url = url.strip().lower()
+
+    if 'vk.com/' in url:
+        screen_name = url.split('vk.com/')[1].strip('/')
+    else:
+        screen_name = url
+
+    screen_name = screen_name.split('/')[0].strip()
+
+    logger.info(f"📋 Парсим группу: {screen_name}")
+
+    params = {
+        'group_id': screen_name,
+        'access_token': vk_set.token,
+        'v': vk_set.vk_api_version
+    }
+
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get('https://api.vk.com/method/groups.getById', params=params, timeout=aiohttp.ClientTimeout(total=10)) as response:
+                data = await response.json()
+
+        if 'error' in data:
+            raise Exception(f"Ошибка VK: {data['error']['error_msg']}")
+
+        info = data['response'][0]
+
+        group_id = info['id']
+        logger.info(f"📋 ID группы: {group_id}, тип: {type(group_id)}")
+
+        return {
+            'id': info['id'],
+            'name': info['name']
+        }
+
+    except Exception as e:
+        logger.error(f"❌ Ошибка при получении информации о группе {screen_name}: {e}")
+        raise

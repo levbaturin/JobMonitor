@@ -142,6 +142,12 @@ class DataBase:
             (group_id, title)
         )
 
+    def delete_group(self, group_id: int) -> None:
+        self.execute_query(
+            'DELETE FROM groups WHERE group_id = ?',
+            (group_id,)
+        )
+
     def set_last_post_id(self, group_id: int, last_post_id: int) -> None:
         self.execute_query(
             "UPDATE groups SET last_post_id = ? WHERE group_id = ?",
@@ -182,6 +188,13 @@ class DataBase:
             ()
         )
         return [{"group_id": row[0], "title": row[1]} for row in results]
+
+    def group_exists(self, group_id: int) -> bool:
+        result = self.fetch_one(
+            'SELECT 1 FROM groups WHERE group_id = ?',
+            (group_id,)
+        )
+        return result is not None
 
 
 db = DataBase(db_set.path)
