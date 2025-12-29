@@ -3,10 +3,11 @@ from aiogram.types import Message, CallbackQuery, ReplyKeyboardMarkup, KeyboardB
 from aiogram.filters import CommandStart, Command
 from tg_bot.lexicon import LEXICON_RU
 from data.database import db
+from logs.logger import logger
 
-router = Router()
+user_router = Router()
 
-async def set_bot_menu(bot: Bot):
+async def set_user_bot_menu(bot: Bot):
     commands = [
         BotCommand(command="start", description="Начало"),
         BotCommand(command="help", description="Помощь"),
@@ -16,31 +17,34 @@ async def set_bot_menu(bot: Bot):
 
     await bot.set_my_commands(commands, scope=BotCommandScopeDefault())
 
-@router.message(CommandStart())
+@user_router.message(CommandStart())
 async def cmd_start(message: Message):
     if not message.from_user:
         await message.answer("❌ Ошибка: не удалось получить данные пользователя")
         return
 
     db.reg_user(message.from_user.id, message.from_user.username)
-    message.answer(LEXICON_RU['cmd_start'])
+    logger.info(f'Зарегистрирован новый пользователь {message.from_user.username} с id {message.from_user.id}')
+    await message.answer(LEXICON_RU['cmd_start'])
 
-@router.message(Command('help'))
+@user_router.message(Command('help'))
 async def cmd_help(message: Message):
-    message.answer(LEXICON_RU['cmd_help'])
+    await message.answer(LEXICON_RU['cmd_help'])
 
-@router.message(Command('start_monitoring'))
+@user_router.message(Command('start_monitoring'))
 async def cmd_start_monitoring(message: Message):
     if not message.from_user:
         await message.answer("❌ Ошибка: не удалось получить данные пользователя")
         return
     db.add_sub(message.from_user.id)
-    message.answer(LEXICON_RU['cmd_start_monitoring'])
+    logger.info(f'На мониторинг подписался пользователь {message.from_user.username} с id {message.from_user.id}')
+    await message.answer(LEXICON_RU['cmd_start_monitoring'])
 
-@router.message(Command('start_monitoring'))
+@user_router.message(Command('stop_monitoring'))
 async def cmd_stop_monitoring(message: Message):
     if not message.from_user:
         await message.answer("❌ Ошибка: не удалось получить данные пользователя")
         return
     db.del_sub(message.from_user.id)
-    message.answer(LEXICON_RU['cmd_stop_monitoring'])
+    logger.info(f'С мониторинга отписался пользователь {message.from_user.username} с id {message.from_user.id}')
+    await message.answer(LEXICON_RU['cmd_stop_monitoring'])

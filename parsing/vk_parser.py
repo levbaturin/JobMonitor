@@ -70,8 +70,12 @@ async def _parse_vk_group(
 
 async def parse_all_vk_groups() -> List[Job]:
     data = db.get_all_group_ids()
-    tasks = [_parse_vk_group(group_id, last_post_id) for group_id, last_post_id in data]
-    raw_jobs = await asyncio.gather(*tasks)
-    result = [job for job in raw_jobs if job]
+    result = []
+    for group_id, last_post_id in data:
+        job = await _parse_vk_group(group_id, last_post_id)
+        if job:
+            result.append(job)
+
+        await asyncio.sleep(0.33)
 
     return result

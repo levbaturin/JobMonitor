@@ -110,7 +110,7 @@ class DataBase:
             (user_id,)
         )
 
-    def get_all_subs(self):
+    def get_all_subs_ids(self) -> List[int]:
         results = self.fetch_all(
             'SELECT user_id FROM users WHERE is_subscriber = 1',
             ()
@@ -123,6 +123,15 @@ class DataBase:
             (1,)
         )
         return [row[0] for row in results]
+
+    def check_is_admin(self, user_id: int) -> bool:
+        result = self.fetch_one(
+            'SELECT is_admin FROM users WHERE user_id = ?',
+            (user_id,)
+        )
+        if result is None:
+            return False
+        return bool(result[0])
 
 #==============таблица groups=======================
 
