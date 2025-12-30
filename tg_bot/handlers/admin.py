@@ -1,7 +1,6 @@
-from aiogram import Router, Bot, F
-from aiogram.types import Message, CallbackQuery, ReplyKeyboardMarkup, KeyboardButton, BotCommand, BotCommandScopeDefault, BotCommandScopeChat
-from aiogram.filters import CommandStart, Command
-from tg_bot.lexicon import LEXICON_RU
+from aiogram import Router, Bot
+from aiogram.types import Message, BotCommand, BotCommandScopeChat
+from aiogram.filters import Command
 from data.database import db
 from logs.logger import logger
 from tg_bot.filters import IsAdminFilter
@@ -66,10 +65,8 @@ async def process_group_urls(message: Message, state: FSMContext) -> None:
 
     for url in urls:
         try:
-            # Получить информацию о группе VK
             group_info = await get_vk_group_info(url)
 
-            # Проверить что функция вернула корректные данные
             if not group_info or 'id' not in group_info:
                 failed.append(f"❌ {url} - Не удалось получить информацию")
                 logger.warning(f"[VK] Не удалось получить инфо: {url}")
@@ -83,13 +80,11 @@ async def process_group_urls(message: Message, state: FSMContext) -> None:
                 logger.warning(f"[VK] {group_id} - нет названия")
                 continue
 
-            # Проверить наличие в БД
             if db.group_exists(group_id, source='vk'):
                 failed.append(f"❌ {title} - уже добавлена")
                 logger.warning(f"[VK] {group_id} уже в БД")
                 continue
 
-            # Добавить в БД
             db.reg_group(group_id=group_id, title=title, source='vk')
             added.append(f"✅ {title}")
             logger.info(f"[VK] ✅ Добавлена: {title} ({group_id})")
@@ -100,7 +95,6 @@ async def process_group_urls(message: Message, state: FSMContext) -> None:
 
     await processing_msg.delete()
 
-    # Формируем результат
     result = "<b>📊 Результат добавления</b>\n\n"
 
     if added:
@@ -152,7 +146,6 @@ async def process_delete_groups(message: Message, state: FSMContext) -> None:
         await message.answer("❌ Отправьте ID выбранных групп")
         return
 
-    # Парсим ID (могут быть с запятыми или пробелами)
     ids = [
         id_str.strip()
         for id_str in message.text.replace(',', ' ').split()
@@ -170,7 +163,6 @@ async def process_delete_groups(message: Message, state: FSMContext) -> None:
         try:
             group_id_int = int(group_id)
 
-            # Проверяем наличие в БД (только VK)
             if db.group_exists(group_id_int, source='vk'):
                 db.delete_group(group_id_int, source='vk')
                 deleted.append(f"✅ Группа {group_id_int} удалена")
@@ -183,7 +175,6 @@ async def process_delete_groups(message: Message, state: FSMContext) -> None:
             failed.append(f"❌ {group_id} - {str(e)}")
             logger.error(f"[VK] Ошибка удаления {group_id}: {e}")
 
-    # Формируем результат
     result = "<b>📊 Результат удаления</b>\n\n"
 
     if deleted:

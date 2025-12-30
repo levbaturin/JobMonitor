@@ -1,13 +1,10 @@
 from aiogram import Router, Bot, F
-from aiogram.types import Message, CallbackQuery, ReplyKeyboardMarkup, KeyboardButton, BotCommand, BotCommandScopeDefault, BotCommandScopeChat
-from aiogram.filters import CommandStart, Command
-from tg_bot.lexicon import LEXICON_RU
+from aiogram.types import Message, BotCommand, BotCommandScopeChat
+from aiogram.filters import Command
 from data.database import db
 from logs.logger import logger
-from tg_bot.filters import IsAdminFilter
 from aiogram.fsm.context import FSMContext
 from tg_bot.states import AddGroupStates
-from parsing.vk_parser import get_vk_group_info
 from config.config import load_bot_settings, TgBot
 
 owner_router = Router()

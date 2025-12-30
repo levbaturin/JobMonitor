@@ -1,5 +1,5 @@
 from aiogram import Router, Bot
-from aiogram.types import Message, CallbackQuery, ReplyKeyboardMarkup, KeyboardButton, BotCommand, BotCommandScopeDefault
+from aiogram.types import Message, BotCommand, BotCommandScopeDefault
 from aiogram.filters import CommandStart, Command
 from tg_bot.lexicon import LEXICON_RU
 from data.database import db
