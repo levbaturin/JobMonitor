@@ -1,4 +1,4 @@
-# VacancyMonitor — Telegram bot for monitoring vacancies from VK groups
+# JobMonitor — Real-time job vacancy alerts from VK to Telegram
 
 Небольшой Telegram-бот для мониторинга объявлений (вакансий) из VK/других источников и рассылки их подписчикам.
 
