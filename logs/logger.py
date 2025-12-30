@@ -10,6 +10,8 @@ LOG_DIR = Path(log.dir)
 LOG_DIR.mkdir(exist_ok=True)
 
 def setup_logger(name: str = 'app'):
+    """Создать и настроить основной логгер приложения."""
+
     logger = logging.getLogger(name)
     logger.setLevel(log.level)
 
@@ -37,6 +39,8 @@ def setup_logger(name: str = 'app'):
     return logger
 
 def setup_filter_logger(name: str = log_filter.name):
+    """Создать и настроить логгер для фильтрованных сообщений."""
+
     filter_logger = logging.getLogger(name)
     filter_logger.setLevel(log_filter.level)
 

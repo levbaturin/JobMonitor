@@ -4,7 +4,8 @@ from data.database import db
 
 class IsAdminFilter(BaseFilter):
     async def __call__(self, message: Message) -> bool:
-        
+        """Проверить, является ли отправитель сообщения админом."""
+
         if not message.from_user:
             await message.answer("❌ Ошибка: не удалось получить данные пользователя")
             return False

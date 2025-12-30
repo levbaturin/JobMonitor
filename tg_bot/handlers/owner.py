@@ -14,6 +14,8 @@ bot_set: TgBot = load_bot_settings()
 owner_router.message.filter(F.from_user.id == bot_set.owner_id)
 
 async def set_owner_bot_menu(bot: Bot, owner_id: int):
+    """Установить меню команд для владельца бота."""
+
     commands = [
             BotCommand(command="start", description="Начало"),
             BotCommand(command="help", description="Помощь"),
@@ -29,11 +31,14 @@ async def set_owner_bot_menu(bot: Bot, owner_id: int):
 
 @owner_router.message(Command('add_admin'))
 async def cmd_add_admin(message: Message, state: FSMContext):
+    """Запросить у владельца id для добавления администратора."""
+
     await message.answer(text='Введите id: ')
     await state.set_state(AddGroupStates.waiting_for_admin_id)
 
 @owner_router.message(AddGroupStates.waiting_for_admin_id)
 async def process_adding_admin(message: Message, state: FSMContext) -> None:
+    """Обработать добавление администратора по введённому id."""
 
     if not message.text:
         await message.answer("❌ Отправьте id аккаунта Telegram")
@@ -71,12 +76,15 @@ async def process_adding_admin(message: Message, state: FSMContext) -> None:
 
 @owner_router.message(Command('del_admin'))
 async def cmd_del_admin(message: Message, state: FSMContext):
+    """Запросить id администратора для удаления."""
+
     await message.answer(text='Введите id администратора для удаления: ')
     await state.set_state(AddGroupStates.waiting_for_delete_admin_id)
 
 
 @owner_router.message(AddGroupStates.waiting_for_delete_admin_id)
 async def process_deleting_admin(message: Message, state: FSMContext) -> None:
+    """Обработать удаление администратора по введённому id."""
 
     if not message.text:
         await message.answer("❌ Отправьте id аккаунта Telegram")

@@ -13,6 +13,7 @@ from tg_bot.handlers.owner import owner_router, set_owner_bot_menu
 bot_set: TgBot = load_bot_settings()
 
 async def main():
+    """Запускает и настраивает бота и планировщик."""
     bot= Bot(token=bot_set.token, default=bot_set.default)
 
     dp = Dispatcher()

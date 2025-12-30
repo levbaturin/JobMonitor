@@ -14,6 +14,8 @@ async def _parse_vk_group(
     group_id: int,
     last_post_id: Optional[int],
 ) -> Optional[Job]:
+    """Просканировать одну группу VK на предмет нового поста, вернуть Job или None."""
+
     try:
         params = {
             'owner_id': -abs(int(group_id)),
@@ -68,6 +70,8 @@ async def _parse_vk_group(
         return
 
 async def parse_all_vk_groups() -> List[Job]:
+    """Просканировать все группы и вернуть список найденных вакансий."""
+
     data = db.get_all_group_ids()
 
     result = []
@@ -81,6 +85,8 @@ async def parse_all_vk_groups() -> List[Job]:
     return result
 
 async def get_vk_group_info(url: str) -> dict:
+    """Получить информацию о группе VK по URL или короткому имени."""
+
     url = url.strip().lower()
 
     if 'vk.com/' in url:

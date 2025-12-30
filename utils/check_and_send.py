@@ -6,6 +6,7 @@ from html import escape
 import asyncio
 
 async def check_and_send(bot: Bot) -> None:
+    """Проверить новые вакансии и отправить их подписчикам."""
 
     all_jobs = await parse_all_vk_groups()
     if not all_jobs:

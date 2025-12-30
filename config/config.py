@@ -47,6 +47,7 @@ class VKParser:
     vk_api_version: str
 
 def load_log_settings():
+    """Загрузить настройки логирования приложения."""
     return LogSettings(
         name='app',
         dir='logs',
@@ -58,6 +59,7 @@ def load_log_settings():
         )
 
 def load_log_filter_settings():
+    """Загрузить настройки логирования фильтра."""
     return LogFilterSettings(
         name='filter_log',
         dir='logs',
@@ -69,11 +71,13 @@ def load_log_filter_settings():
         )
 
 def load_db_settings():
+    """Загрузить настройки базы данных."""
     return DataBaseSettings(
         path='data/data.db',
         )
 
 def load_bot_settings():
+    """Загрузить настройки Telegram-бота."""
     return TgBot(
         token=BOT_TOKEN,
         owner_id=BOT_OWNER_ID,
@@ -81,6 +85,7 @@ def load_bot_settings():
     )
 
 def load_vk_settings():
+    """Загрузить настройки VK API парсера."""
     return VKParser(
         token=VK_TOKEN,
         vk_api_version='5.131'

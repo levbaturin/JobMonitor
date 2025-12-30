@@ -29,6 +29,8 @@ BAD_KEYWORDS = {
 
 
 def job_filter(text: str, url:str) -> bool:
+    """Проверить текст и URL на запрещённые ключевые слова."""
+
     if not text:
         return False
 

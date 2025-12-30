@@ -8,6 +8,8 @@ from logs.logger import logger
 user_router = Router()
 
 async def set_user_bot_menu(bot: Bot):
+    """Установить меню команд для обычного пользователя."""
+
     commands = [
         BotCommand(command="start", description="Начало"),
         BotCommand(command="help", description="Помощь"),
@@ -19,6 +21,8 @@ async def set_user_bot_menu(bot: Bot):
 
 @user_router.message(CommandStart())
 async def cmd_start(message: Message):
+    """Обработчик команды /start для регистрации пользователя."""
+
     if not message.from_user:
         await message.answer("❌ Ошибка: не удалось получить данные пользователя")
         return
@@ -29,10 +33,14 @@ async def cmd_start(message: Message):
 
 @user_router.message(Command('help'))
 async def cmd_help(message: Message):
+    """Отправить сообщение помощи пользователю."""
+
     await message.answer(LEXICON_RU['cmd_help'])
 
 @user_router.message(Command('start_monitoring'))
 async def cmd_start_monitoring(message: Message):
+    """Подписать пользователя на мониторинг вакансий."""
+
     if not message.from_user:
         await message.answer("❌ Ошибка: не удалось получить данные пользователя")
         return
@@ -42,6 +50,8 @@ async def cmd_start_monitoring(message: Message):
 
 @user_router.message(Command('stop_monitoring'))
 async def cmd_stop_monitoring(message: Message):
+    """Отписать пользователя от мониторинга вакансий."""
+
     if not message.from_user:
         await message.answer("❌ Ошибка: не удалось получить данные пользователя")
         return
