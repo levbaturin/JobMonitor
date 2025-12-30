@@ -30,7 +30,8 @@ class DataBase:
                 group_id INTEGER PRIMARY KEY,
                 title TEXT,
                 last_post_id INTEGER DEFAULT 0,
-                is_active INTEGER DEFAULT 1
+                is_active INTEGER DEFAULT 1,
+                source VARCHAR(10)
             )
             '''
         ]
@@ -135,17 +136,17 @@ class DataBase:
 
 #==============таблица groups=======================
 
-    def reg_group(self, group_id: int, title: str) -> None:
+    def reg_group(self, group_id: int, title: str, source: str) -> None:
         self.execute_query(
-            "INSERT OR REPLACE INTO groups (group_id, title, last_post_id, is_active) "
-            "VALUES (?, ?, 0, 1)",
-            (group_id, title)
+            "INSERT OR REPLACE INTO groups (group_id, title, last_post_id, is_active, source) "
+            "VALUES (?, ?, 0, 1, ?)",
+            (group_id, title, source)
         )
 
-    def delete_group(self, group_id: int) -> None:
+    def delete_group(self, group_id: int, source: str) -> None:
         self.execute_query(
-            'DELETE FROM groups WHERE group_id = ?',
-            (group_id,)
+            'DELETE FROM groups WHERE group_id = ? AND source = ?',
+            (group_id, source)
         )
 
     def set_last_post_id(self, group_id: int, last_post_id: int) -> None:
@@ -189,10 +190,10 @@ class DataBase:
         )
         return [{"group_id": row[0], "title": row[1]} for row in results]
 
-    def group_exists(self, group_id: int) -> bool:
+    def group_exists(self, group_id: int, source: str) -> bool:
         result = self.fetch_one(
-            'SELECT 1 FROM groups WHERE group_id = ?',
-            (group_id,)
+            'SELECT 1 FROM groups WHERE group_id = ? AND source = ?',
+            (group_id, source)
         )
         return result is not None
 

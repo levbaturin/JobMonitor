@@ -36,7 +36,7 @@ async def main():
     scheduler.add_job(
         check_and_send,
         'interval',
-        seconds=15,
+        seconds=60,
         args=[bot],
         id='job_parser'
     )

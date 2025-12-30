@@ -6,12 +6,14 @@ from html import escape
 import asyncio
 
 async def check_and_send(bot: Bot) -> None:
+
     all_jobs = await parse_all_vk_groups()
     if not all_jobs:
         logger.info('Новых объявлений не найдено')
         return
 
     all_subs_ids = db.get_all_subs_ids()
+    logger.info(f"👥 Подписчиков: {len(all_subs_ids)}")
 
     for job in all_jobs:
         text = (

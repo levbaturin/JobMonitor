@@ -34,28 +34,27 @@ async def _parse_vk_group(
         posts = data.get('response', {}).get('items', [])
 
         if not posts:
+            logger.info(f"[{group_id}] ❌ Постов не найдено")
             return
 
-        post = None
-
-        for pst in posts:
-            if pst.get('is_pinned') is False:
-                post = pst
-                break
-
-        if not post:
-            return
-
-        post_id = post.get('id')
-
-        if post_id <= last_post_id and last_post_id != 0:
+        for post in posts:
+            post_id = post.get('id')
+            if post_id <= last_post_id and last_post_id != 0:
+                continue
+            break
+        else:
             return
 
         db.set_last_post_id(group_id=group_id, last_post_id=post_id)
 
+        if last_post_id == 0:
+            return
+
         owner_id = post.get('owner_id', -abs(int(group_id)))
         url = f"https://vk.com/wall{owner_id}_{post_id}"
         text = post.get('text', '[Нет текста]')
+
+        logger.info(f"[{group_id}] 📄 Текст: {text[:50]}...")
 
         if text != '[Нет текста]' and not job_filter(text, url):
             return
@@ -70,14 +69,15 @@ async def _parse_vk_group(
 
 async def parse_all_vk_groups() -> List[Job]:
     data = db.get_all_group_ids()
+
     result = []
     for group_id, last_post_id in data:
+        logger.info(f"[{group_id}] Парсю группу, последний пост: {last_post_id}")
         job = await _parse_vk_group(group_id, last_post_id)
         if job:
             result.append(job)
 
         await asyncio.sleep(0.33)
-
     return result
 
 async def get_vk_group_info(url: str) -> dict:
@@ -107,9 +107,6 @@ async def get_vk_group_info(url: str) -> dict:
             raise Exception(f"Ошибка VK: {data['error']['error_msg']}")
 
         info = data['response'][0]
-
-        group_id = info['id']
-        logger.info(f"📋 ID группы: {group_id}, тип: {type(group_id)}")
 
         return {
             'id': info['id'],

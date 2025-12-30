@@ -10,6 +10,8 @@ load_dotenv()
 BOT_TOKEN = os.getenv('BOT_TOKEN', '')
 VK_TOKEN = os.getenv('VK_TOKEN', '')
 BOT_OWNER_ID = int(os.getenv('BOT_OWNER_ID', ''))
+TG_API_ID= int(os.getenv('TG_API_ID', ''))
+TG_API_HASH=os.getenv('TG_API_HASH', '')
 
 @dataclass
 class LogSettings:
@@ -45,6 +47,12 @@ class TgBot:
 class VKParser:
     token: str
     vk_api_version: str
+
+@dataclass
+class TgAPI:
+    id: int
+    hash: str
+    token: str
 
 
 def load_log_settings():
@@ -85,4 +93,11 @@ def load_vk_settings():
     return VKParser(
         token=VK_TOKEN,
         vk_api_version='5.131'
+    )
+
+def load_tg_api_settings():
+    return TgAPI(
+        id=TG_API_ID,
+        hash=TG_API_HASH,
+        token=BOT_TOKEN
     )
